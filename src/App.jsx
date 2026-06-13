@@ -1,4 +1,5 @@
 import Account from './components/Account';
+import BgmPlayer from './components/BgmPlayer';
 import Calendar from './components/Calendar';
 import Gallery from './components/Gallery';
 import Greeting from './components/Greeting';
@@ -16,6 +17,7 @@ export default function App() {
         <Navigation />
         <Account />
       </div>
+      <BgmPlayer />
     </main>
   );
 }
