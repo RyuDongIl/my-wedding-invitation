@@ -1,9 +1,26 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import bgmSrc from '../../audio/Piano MR - Acoustic Inst_ By Your Side.mp3';
 
 export default function BgmPlayer() {
   const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (!audio) return;
+
+    const startAutoplay = async () => {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch {
+        setIsPlaying(false);
+      }
+    };
+
+    startAutoplay();
+  }, []);
 
   const togglePlayback = async () => {
     const audio = audioRef.current;
@@ -26,7 +43,7 @@ export default function BgmPlayer() {
 
   return (
     <>
-      <audio ref={audioRef} src={bgmSrc} loop preload="auto" />
+      <audio ref={audioRef} src={bgmSrc} loop autoPlay preload="auto" />
       <button
         type="button"
         onClick={togglePlayback}
