@@ -4,7 +4,7 @@ const KAKAO_MAP_APP_KEY = import.meta.env.VITE_KAKAO_MAP_APP_KEY || 'a536ccaa47c
 const KAKAO_MAP_SDK_ID = 'kakao-map-sdk';
 const VENUE_NAME = '서울대학교 교수회관 실내 예식';
 const VENUE_ADDRESS = '서울 관악구 관악로 1 65동';
-const KAKAO_MAP_URL = `https://map.kakao.com/link/search/${encodeURIComponent(VENUE_ADDRESS)}`;
+const KAKAO_MAP_URL = 'https://place.map.kakao.com/11477726?t_src=kakaotalk&referrer=kakaotalkbrowser';
 
 const transitRoutes = [
   {
