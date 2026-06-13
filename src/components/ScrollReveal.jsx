@@ -24,8 +24,8 @@ export default function ScrollReveal({ children, className = '', delay = 0 }) {
         }
       },
       {
-        rootMargin: '0px 0px 18% 0px',
-        threshold: 0.01,
+        rootMargin: '0px 0px -6% 0px',
+        threshold: 0.08,
       },
     );
 
