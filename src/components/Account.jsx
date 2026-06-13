@@ -4,15 +4,15 @@ const accountGroups = [
   {
     title: '신랑측 계좌번호',
     accounts: [
-      { name: '신랑 동일', bank: '국민은행', number: '123456-78-901234' },
-      { name: '혼주 김민수', bank: '신한은행', number: '110-123-456789' },
+      { name: '신랑 동일', bank: '농협은행', number: '3020681188171' },
+      { name: '혼주 류경창', bank: '신한은행', number: '110-123-456789' },
     ],
   },
   {
     title: '신부측 계좌번호',
     accounts: [
       { name: '신부 유미', bank: '하나은행', number: '987-654321-01234' },
-      { name: '혼주 이상호', bank: '우리은행', number: '1002-345-678901' },
+      { name: '혼주 이영호', bank: '우리은행', number: '1002-345-678901' },
     ],
   },
 ];

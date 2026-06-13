@@ -2,7 +2,7 @@ const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 const days = Array.from({ length: 30 }, (_, index) => index + 1);
 
 function getDDayText() {
-  const weddingDate = new Date('2026-11-21T12:00:00+09:00');
+  const weddingDate = new Date('2026-11-07T11:00:00+09:00');
   const today = new Date();
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const weddingStart = new Date(
@@ -37,7 +37,7 @@ export default function Calendar() {
         <div className="mt-5 grid grid-cols-7 gap-y-3 text-sm text-stone-600">
           {days.map((day) => {
             const isSunday = day % 7 === 1;
-            const isWeddingDay = day === 21;
+            const isWeddingDay = day === 7;
 
             return (
               <div key={day} className="flex h-9 items-center justify-center">
