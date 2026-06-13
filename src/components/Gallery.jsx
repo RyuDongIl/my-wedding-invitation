@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const galleryImages = [
   '/images/01-IMG_0761_첫장-.webp',
@@ -27,6 +28,17 @@ export default function Gallery() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
 
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
   const openLightbox = (index) => {
     setCurrentImage(index);
     setIsOpen(true);
@@ -45,6 +57,54 @@ export default function Gallery() {
     event.stopPropagation();
     setCurrentImage((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
   };
+
+  const lightbox = isOpen ? (
+    <div
+      className="fixed inset-0 z-50 flex h-dvh w-screen items-center justify-center bg-black text-white"
+      role="dialog"
+      aria-modal="true"
+      aria-label="웨딩 사진 미리보기"
+      onClick={closeLightbox}
+    >
+      <p className="absolute left-6 top-[max(1.75rem,env(safe-area-inset-top))] z-10 text-lg font-light tracking-wide text-white/70">
+        {currentImage + 1} / {galleryImages.length}
+      </p>
+
+      <button
+        type="button"
+        className="absolute right-6 top-[max(1.25rem,env(safe-area-inset-top))] z-10 text-5xl font-extralight leading-none text-white/80 transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+        onClick={closeLightbox}
+        aria-label="갤러리 미리보기 닫기"
+      >
+        ×
+      </button>
+
+      <button
+        type="button"
+        className="absolute left-0 top-1/2 z-10 flex h-16 w-14 -translate-y-1/2 items-center justify-center bg-black/25 text-6xl font-extralight leading-none text-white/80 transition hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+        onClick={showPreviousImage}
+        aria-label="이전 웨딩 사진 보기"
+      >
+        ‹
+      </button>
+
+      <img
+        src={galleryImages[currentImage]}
+        alt={`선택한 웨딩 갤러리 사진 ${currentImage + 1}`}
+        className="max-h-[82dvh] w-full object-contain"
+        onClick={(event) => event.stopPropagation()}
+      />
+
+      <button
+        type="button"
+        className="absolute right-0 top-1/2 z-10 flex h-16 w-14 -translate-y-1/2 items-center justify-center bg-black/25 text-6xl font-extralight leading-none text-white/80 transition hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+        onClick={showNextImage}
+        aria-label="다음 웨딩 사진 보기"
+      >
+        ›
+      </button>
+    </div>
+  ) : null;
 
   return (
     <section className="border-y border-stone-200/80 px-7 py-16 text-center">
@@ -70,53 +130,7 @@ export default function Gallery() {
         ))}
       </div>
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white"
-          role="dialog"
-          aria-modal="true"
-          aria-label="웨딩 사진 미리보기"
-          onClick={closeLightbox}
-        >
-          <p className="absolute left-6 top-7 z-10 text-lg font-light tracking-wide text-white/70">
-            {currentImage + 1} / {galleryImages.length}
-          </p>
-
-          <button
-            type="button"
-            className="absolute right-6 top-5 z-10 text-5xl font-extralight leading-none text-white/80 transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
-            onClick={closeLightbox}
-            aria-label="갤러리 미리보기 닫기"
-          >
-            ×
-          </button>
-
-          <button
-            type="button"
-            className="absolute left-0 top-1/2 z-10 flex h-16 w-14 -translate-y-1/2 items-center justify-center bg-black/25 text-6xl font-extralight leading-none text-white/80 transition hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
-            onClick={showPreviousImage}
-            aria-label="이전 웨딩 사진 보기"
-          >
-            ‹
-          </button>
-
-          <img
-            src={galleryImages[currentImage]}
-            alt={`선택한 웨딩 갤러리 사진 ${currentImage + 1}`}
-            className="max-h-[82vh] w-full object-contain"
-            onClick={(event) => event.stopPropagation()}
-          />
-
-          <button
-            type="button"
-            className="absolute right-0 top-1/2 z-10 flex h-16 w-14 -translate-y-1/2 items-center justify-center bg-black/25 text-6xl font-extralight leading-none text-white/80 transition hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
-            onClick={showNextImage}
-            aria-label="다음 웨딩 사진 보기"
-          >
-            ›
-          </button>
-        </div>
-      )}
+      {lightbox && createPortal(lightbox, document.body)}
     </section>
   );
 }
