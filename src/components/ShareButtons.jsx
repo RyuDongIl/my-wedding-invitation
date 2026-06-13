@@ -1,16 +1,94 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const KAKAO_JAVASCRIPT_KEY = '[지난번발급받은JavaScript키]';
+const KAKAO_JAVASCRIPT_KEY =
+  import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY ||
+  import.meta.env.VITE_KAKAO_MAP_APP_KEY ||
+  'a536ccaa47cdf0b8e4ef6f5eb234cc7b';
+const KAKAO_SDK_URL = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
+const KAKAO_SDK_SCRIPT_ID = 'kakao-javascript-sdk';
 const INVITATION_URL = 'https://yumi-dongil-wedding-invitation.vercel.app';
 const SHARE_IMAGE_URL = `${INVITATION_URL}/images/07-IMG_1249-.webp`;
 
-export default function ShareButtons() {
-  useEffect(() => {
-    if (!window.Kakao) return;
+let kakaoSdkLoadPromise;
 
-    if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(KAKAO_JAVASCRIPT_KEY);
+const initializeKakao = () => {
+  if (!window.Kakao) {
+    throw new Error('Kakao SDK is not available.');
+  }
+
+  if (!KAKAO_JAVASCRIPT_KEY) {
+    throw new Error('Kakao JavaScript key is missing.');
+  }
+
+  if (!window.Kakao.isInitialized()) {
+    window.Kakao.init(KAKAO_JAVASCRIPT_KEY);
+  }
+
+  return window.Kakao.isInitialized();
+};
+
+const loadKakaoSdk = () => {
+  if (typeof window === 'undefined') {
+    return Promise.reject(new Error('Kakao SDK can only be loaded in a browser.'));
+  }
+
+  if (window.Kakao) {
+    return Promise.resolve(initializeKakao());
+  }
+
+  if (kakaoSdkLoadPromise) {
+    return kakaoSdkLoadPromise;
+  }
+
+  kakaoSdkLoadPromise = new Promise((resolve, reject) => {
+    const existingScript = document.getElementById(KAKAO_SDK_SCRIPT_ID);
+
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(initializeKakao()), { once: true });
+      existingScript.addEventListener('error', () => reject(new Error('Failed to load Kakao SDK.')), {
+        once: true,
+      });
+      return;
     }
+
+    const script = document.createElement('script');
+    script.id = KAKAO_SDK_SCRIPT_ID;
+    script.src = KAKAO_SDK_URL;
+    script.async = true;
+    script.onload = () => resolve(initializeKakao());
+    script.onerror = () => reject(new Error('Failed to load Kakao SDK.'));
+
+    document.head.appendChild(script);
+  }).catch((error) => {
+    kakaoSdkLoadPromise = undefined;
+    throw error;
+  });
+
+  return kakaoSdkLoadPromise;
+};
+
+export default function ShareButtons() {
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    loadKakaoSdk()
+      .then((initialized) => {
+        if (isMounted) {
+          setIsInitialized(initialized);
+        }
+      })
+      .catch((error) => {
+        console.error('카카오 SDK 초기화에 실패했습니다.', error);
+        if (isMounted) {
+          setIsInitialized(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const copyInvitationLink = async () => {
@@ -19,32 +97,44 @@ export default function ShareButtons() {
   };
 
   const shareToKakao = () => {
-    if (!window.Kakao?.Share) {
-      window.alert('카카오톡 공유 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
+    if (!isInitialized || !window.Kakao?.Share) {
+      loadKakaoSdk()
+        .then((initialized) => {
+          setIsInitialized(initialized);
+        })
+        .catch((error) => {
+          console.error('카카오 SDK 재초기화에 실패했습니다.', error);
+          window.alert('카카오톡 공유 기능을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');
+        });
       return;
     }
 
-    window.Kakao.Share.sendDefault({
-      objectType: 'feed',
-      content: {
-        title: '동일 & 유미 결혼식에 초대합니다',
-        description: '2026년 11월 21일 토요일 오후 12시\n서울대학교 교수회관',
-        imageUrl: SHARE_IMAGE_URL,
-        link: {
-          mobileWebUrl: INVITATION_URL,
-          webUrl: INVITATION_URL,
-        },
-      },
-      buttons: [
-        {
-          title: '모바일 청첩장 보기',
+    try {
+      window.Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: '동일 & 유미 결혼식에 초대합니다',
+          description: '2026년 11월 21일 토요일 오후 12시\n서울대학교 교수회관',
+          imageUrl: SHARE_IMAGE_URL,
           link: {
             mobileWebUrl: INVITATION_URL,
             webUrl: INVITATION_URL,
           },
         },
-      ],
-    });
+        buttons: [
+          {
+            title: '모바일 청첩장 보기',
+            link: {
+              mobileWebUrl: INVITATION_URL,
+              webUrl: INVITATION_URL,
+            },
+          },
+        ],
+      });
+    } catch (error) {
+      console.error('카카오톡 공유에 실패했습니다.', error);
+      window.alert('카카오톡 공유 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+    }
   };
 
   return (
@@ -60,7 +150,9 @@ export default function ShareButtons() {
         <button
           type="button"
           onClick={shareToKakao}
-          className="rounded-sm bg-[#FEE500] py-3 text-xs font-medium tracking-wide text-[#3A1D1D] transition hover:bg-[#F6DD00]"
+          disabled={!isInitialized}
+          aria-busy={!isInitialized}
+          className="rounded-sm bg-[#FEE500] py-3 text-xs font-medium tracking-wide text-[#3A1D1D] transition hover:bg-[#F6DD00] disabled:cursor-wait disabled:opacity-60 disabled:hover:bg-[#FEE500]"
         >
           카카오톡 공유
         </button>
