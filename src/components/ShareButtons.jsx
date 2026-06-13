@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const KAKAO_JAVASCRIPT_KEY = '[지난번발급받은JavaScript키]';
+const KAKAO_JAVASCRIPT_KEY = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
 const KAKAO_SDK_URL = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
 const KAKAO_SDK_SCRIPT_ID = 'kakao-javascript-sdk';
 const INVITATION_URL = 'https://yumi-dongil-wedding-invitation.vercel.app';
@@ -8,7 +8,13 @@ const SHARE_IMAGE_URL = `${INVITATION_URL}/images/07-IMG_1249-.webp`;
 
 let kakaoSdkLoadPromise;
 
+const hasKakaoJavascriptKey = () => Boolean(KAKAO_JAVASCRIPT_KEY?.trim());
+
 const initializeKakao = () => {
+  if (!hasKakaoJavascriptKey()) {
+    throw new Error('VITE_KAKAO_JAVASCRIPT_KEY is not configured.');
+  }
+
   if (!window.Kakao) {
     throw new Error('Kakao SDK is not available.');
   }
@@ -23,6 +29,10 @@ const initializeKakao = () => {
 const loadKakaoSdk = () => {
   if (typeof window === 'undefined') {
     return Promise.reject(new Error('Kakao SDK can only be loaded in a browser.'));
+  }
+
+  if (!hasKakaoJavascriptKey()) {
+    return Promise.reject(new Error('VITE_KAKAO_JAVASCRIPT_KEY is not configured.'));
   }
 
   if (window.Kakao) {
@@ -90,6 +100,11 @@ export default function ShareButtons() {
   };
 
   const shareToKakao = () => {
+    if (!hasKakaoJavascriptKey()) {
+      window.alert('카카오 JavaScript 키가 설정되지 않았습니다. 배포 환경 변수를 확인해 주세요.');
+      return;
+    }
+
     if (!isInitialized || !window.Kakao?.Share) {
       loadKakaoSdk()
         .then((initialized) => {
