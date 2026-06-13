@@ -1,5 +1,4 @@
-const heroImage =
-  'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=85';
+const heroImage = '/images/01-IMG_0761_첫장-.webp';
 
 export default function Hero() {
   return (
@@ -11,8 +10,8 @@ export default function Hero() {
       <div className="mx-auto w-full max-w-[300px] overflow-hidden rounded-sm bg-stone-100 shadow-[0_18px_45px_rgba(120,113,108,0.18)]">
         <img
           src={heroImage}
-          alt="따뜻한 분위기의 웨딩 이미지"
-          className="h-[430px] w-full object-cover"
+          alt="면사포 아래에서 서로를 바라보며 웃는 동일과 유미"
+          className="h-[430px] w-full object-cover object-[52%_42%]"
         />
       </div>
 
