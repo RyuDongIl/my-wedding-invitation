@@ -6,6 +6,7 @@ import Greeting from './components/Greeting';
 import Hero from './components/Hero';
 import Navigation from './components/Navigation';
 import ScrollReveal from './components/ScrollReveal';
+import ShareButtons from './components/ShareButtons';
 
 export default function App() {
   return (
@@ -26,6 +27,9 @@ export default function App() {
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <Account />
+        </ScrollReveal>
+        <ScrollReveal delay={80}>
+          <ShareButtons />
         </ScrollReveal>
       </div>
       <BgmPlayer />
