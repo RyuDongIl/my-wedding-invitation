@@ -22,12 +22,12 @@ export default function Greeting() {
 
       <div className="mt-12 space-y-4 border-t border-stone-200 pt-9 text-sm leading-7 text-stone-600">
         <div className="flex items-center justify-center gap-3">
-          <span className="font-medium text-stone-800">김민수 · 박정희</span>
+          <span className="font-medium text-stone-800">류경창 · 임윤희</span>
           <span className="text-stone-400">의 장남</span>
           <span className="font-serif text-lg text-stone-800">동일</span>
         </div>
         <div className="flex items-center justify-center gap-3">
-          <span className="font-medium text-stone-800">이상호 · 최은영</span>
+          <span className="font-medium text-stone-800">이영호 · 오오나리 나오꼬</span>
           <span className="text-stone-400">의 장녀</span>
           <span className="font-serif text-lg text-stone-800">유미</span>
         </div>

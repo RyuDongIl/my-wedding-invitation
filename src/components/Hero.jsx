@@ -22,8 +22,8 @@ export default function Hero() {
           동일 <span className="text-2xl text-stone-400">그리고</span> 유미
         </h1>
         <div className="mt-7 space-y-2 text-[15px] leading-7 text-stone-600">
-          <p>2026년 11월 21일 토요일 오후 12시</p>
-          <p>서울대학교 교수회관</p>
+          <p>2026년 11월 7일 토요일 오전 11시</p>
+          <p>서울대학교 교수회관 2층 예식장</p>
         </div>
       </div>
     </section>
