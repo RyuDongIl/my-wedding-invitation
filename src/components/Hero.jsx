@@ -1,4 +1,4 @@
-const heroImage = '/images/01-IMG_0761_첫장-.webp';
+const heroImage = '/images/07-IMG_1249-.webp';
 
 export default function Hero() {
   return (
@@ -10,8 +10,8 @@ export default function Hero() {
       <div className="mx-auto w-full max-w-[300px] overflow-hidden rounded-sm bg-stone-100 shadow-[0_18px_45px_rgba(120,113,108,0.18)]">
         <img
           src={heroImage}
-          alt="면사포 아래에서 서로를 바라보며 웃는 동일과 유미"
-          className="h-[430px] w-full object-cover object-[52%_42%]"
+          alt="서로 기대어 다정하게 포즈를 취한 동일과 유미"
+          className="h-[430px] w-full object-cover object-[50%_45%]"
         />
       </div>
 
