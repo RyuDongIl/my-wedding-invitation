@@ -122,7 +122,7 @@ export default function ShareButtons() {
         objectType: 'feed',
         content: {
           title: '동일 & 유미 결혼식에 초대합니다',
-          description: '2026년 11월 21일 토요일 오후 12시\n서울대학교 교수회관',
+          description: '2026년 11월 7일 토요일 오전 11시\n서울대학교 교수회관',
           imageUrl: SHARE_IMAGE_URL,
           link: {
             mobileWebUrl: INVITATION_URL,
