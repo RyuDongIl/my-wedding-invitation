@@ -25,65 +25,96 @@ const galleryImages = [
 
 export default function Gallery() {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null);
+  const [currentImage, setCurrentImage] = useState(0);
 
-  const openLightbox = (image) => {
-    setCurrentImage(image);
+  const openLightbox = (index) => {
+    setCurrentImage(index);
     setIsOpen(true);
   };
 
   const closeLightbox = () => {
     setIsOpen(false);
-    setCurrentImage(null);
+  };
+
+  const showPreviousImage = (event) => {
+    event.stopPropagation();
+    setCurrentImage((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
+  };
+
+  const showNextImage = (event) => {
+    event.stopPropagation();
+    setCurrentImage((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
   };
 
   return (
     <section className="border-y border-stone-200/80 px-7 py-16 text-center">
-      <p className="font-serif text-2xl tracking-[0.2em] text-stone-800">Gallery</p>
+      <p className="font-serif text-2xl uppercase tracking-[0.35em] text-stone-500">Gallery</p>
       <p className="mt-4 text-sm leading-7 text-stone-500">우리의 첫 편지에 담아두고 싶은 장면들</p>
 
-      <div className="mt-10 space-y-8">
+      <div className="mt-10 grid grid-cols-3 gap-3">
         {galleryImages.map((image, index) => (
           <button
             key={image}
             type="button"
-            className="block w-full overflow-hidden rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-stone-300 focus:ring-offset-4 focus:ring-offset-[#FAF9F6]"
-            onClick={() => openLightbox(image)}
-            aria-label={`웨딩 사진 ${index + 1} 크게 보기`}
+            className="aspect-square w-full overflow-hidden bg-stone-100 focus:outline-none focus:ring-2 focus:ring-stone-300 focus:ring-offset-4 focus:ring-offset-[#FAF9F6]"
+            onClick={() => openLightbox(index)}
+            aria-label={`웨딩 사진 ${index + 1} 미리보기 열기`}
           >
             <img
               src={image}
               alt={`웨딩 갤러리 사진 ${index + 1}`}
-              className="h-auto w-full rounded-sm object-cover"
-              loading={index < 2 ? 'eager' : 'lazy'}
+              className="h-full w-full object-cover"
+              loading={index < 9 ? 'eager' : 'lazy'}
             />
           </button>
         ))}
       </div>
 
-      {isOpen && currentImage && (
+      {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-5 py-12"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white"
           role="dialog"
           aria-modal="true"
-          aria-label="웨딩 사진 크게 보기"
+          aria-label="웨딩 사진 미리보기"
           onClick={closeLightbox}
         >
+          <p className="absolute left-6 top-7 z-10 text-lg font-light tracking-wide text-white/70">
+            {currentImage + 1} / {galleryImages.length}
+          </p>
+
           <button
             type="button"
-            className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-3xl leading-none text-white backdrop-blur-sm transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
+            className="absolute right-6 top-5 z-10 text-5xl font-extralight leading-none text-white/80 transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
             onClick={closeLightbox}
-            aria-label="갤러리 팝업 닫기"
+            aria-label="갤러리 미리보기 닫기"
           >
             ×
           </button>
 
+          <button
+            type="button"
+            className="absolute left-0 top-1/2 z-10 flex h-16 w-14 -translate-y-1/2 items-center justify-center bg-black/25 text-6xl font-extralight leading-none text-white/80 transition hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+            onClick={showPreviousImage}
+            aria-label="이전 웨딩 사진 보기"
+          >
+            ‹
+          </button>
+
           <img
-            src={currentImage}
-            alt="선택한 웨딩 갤러리 사진"
-            className="max-h-full max-w-full rounded-sm object-contain shadow-2xl"
+            src={galleryImages[currentImage]}
+            alt={`선택한 웨딩 갤러리 사진 ${currentImage + 1}`}
+            className="max-h-[82vh] w-full object-contain"
             onClick={(event) => event.stopPropagation()}
           />
+
+          <button
+            type="button"
+            className="absolute right-0 top-1/2 z-10 flex h-16 w-14 -translate-y-1/2 items-center justify-center bg-black/25 text-6xl font-extralight leading-none text-white/80 transition hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+            onClick={showNextImage}
+            aria-label="다음 웨딩 사진 보기"
+          >
+            ›
+          </button>
         </div>
       )}
     </section>
