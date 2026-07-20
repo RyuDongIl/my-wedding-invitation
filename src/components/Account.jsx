@@ -11,7 +11,7 @@ const accountGroups = [
   {
     title: '신부측 계좌번호',
     accounts: [
-      { name: '신부 이유미', bank: '카카오뱅크', number: '3333-16-3598303' },
+      { name: '신부 이유미', bank: '카카오뱅크', number: '3333-12-3709201' },
       { name: '혼주 이영호', bank: '우리은행', number: '056-437047-02-003' },
     ],
   },
